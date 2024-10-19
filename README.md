@@ -74,4 +74,4 @@ The server will start on the specified port (default: 3001).
 This project is licensed under the [MIT License](https://mit-license.org/).
 
 ## Author
-Developed by **Ali Elgamal** and **Ali Reda**.
+Developed by [**Ali Elgamal**](https://www.linkedin.com/in/ali-elgamal-951093214/) and [**Ali Reda**](https://www.linkedin.com/in/alli-reda).
