@@ -6,6 +6,9 @@ const standardTheme = document.querySelector('.standard-theme');
 const lightTheme = document.querySelector('.light-theme');
 const darkerTheme = document.querySelector('.darker-theme');
 
+// Store the current task ID for updating
+let currentTaskId = null;
+
 // Event Listeners
 toDoBtn.addEventListener('click', handleSubmit);
 toDoList.addEventListener('click', handleActions);
@@ -17,6 +20,59 @@ darkerTheme.addEventListener('click', () => changeTheme('darker'));
 // Check if one theme has been set previously and apply it
 let savedTheme = localStorage.getItem('savedTheme');
 savedTheme === null ? changeTheme('standard') : changeTheme(savedTheme);
+
+// Functions
+async function handleSubmit(event) {
+    event.preventDefault(); // Prevent form submission
+
+    const taskDescription = toDoInput.value.trim();
+    if (taskDescription === '') {
+        alert("You must write something!");
+        return;
+    }
+
+    if (currentTaskId) {
+        // Update the existing task
+        await updateTask(currentTaskId, taskDescription);
+        currentTaskId = null; // Reset current task ID after updating
+        toDoBtn.innerText = 'Add'; // Reset button text after update
+    } else {
+        // Add a new task
+        await addTask(taskDescription);
+    }
+
+    toDoInput.value = ''; // Clear input field after submit
+}
+
+async function addTask(description) {
+    const sessionId = getSessionId(); // Get session ID
+    const response = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ description, sessionId }) // Include sessionId in the request
+    });
+
+    const newTask = await response.json();
+    appendTaskToTable(newTask);
+}
+
+async function updateTask(id, description) {
+    const sessionId = getSessionId(); // Get session ID
+    const response = await fetch(`/api/tasks/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ description, completed: false, sessionId }) // Include sessionId in the request
+    });
+
+    const updatedTask = await response.json();
+    const taskRow = document.querySelector(`tr[data-id="${id}"]`);
+    taskRow.children[0].innerText = updatedTask.description; // Update the description in the table
+}
+
 
 function appendTaskToTable(task) {
     const row = document.createElement('tr');
@@ -55,6 +111,83 @@ function appendTaskToTable(task) {
     toDoList.appendChild(row);
 }
 
+async function handleActions(event) {
+    const item = event.target.closest('button');
+
+    if (item && item.classList.contains('delete-btn')) {
+        const todoElement = item.closest('tr');
+        const taskId = todoElement.dataset.id;
+        const sessionId = getSessionId(); // Get session ID
+
+        // Pass sessionId as a query parameter in the DELETE request
+        await fetch(`/api/tasks/${taskId}?sessionId=${sessionId}`, { method: 'DELETE' });
+        todoElement.remove();
+    }
+
+    if (item && item.classList.contains('update-btn')) {
+        const todoElement = item.closest('tr');
+        const taskId = todoElement.dataset.id;
+
+        toDoInput.value = todoElement.children[0].innerText; // Set input value to the current task
+        currentTaskId = taskId; // Store the current task ID
+        toDoBtn.innerText = 'Update'; // Change button text to 'Update'
+    }
+
+    if (item && item.classList.contains('check-btn')) {
+        const todoElement = item.closest('tr');
+        const taskId = todoElement.dataset.id;
+        const completed = todoElement.children[1].innerText === 'Completed' ? false : true; // Toggle completion
+        const sessionId = getSessionId(); // Get session ID
+    
+        // Send the updated status to the server
+        await fetch(`/api/tasks/${taskId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ completed, sessionId }) // Include sessionId in the request
+        });
+    
+        // Update the status cell and task row style
+        todoElement.children[1].innerText = completed ? 'Completed' : 'Pending'; // Update the status text
+        todoElement.classList.toggle('completed', completed); // Add 'completed' class if completed
+    }
+    
+}
+
+async function getTodos() {
+    const sessionId = getSessionId(); // Get session ID
+    const response = await fetch(`/api/tasks?sessionId=${sessionId}`);
+    const tasks = await response.json();
+
+    tasks.forEach(task => {
+        appendTaskToTable(task);
+    });
+}
+// Function to display time ago format for task creation
+function timeAgo(timestamp) {
+    const date = new Date(timestamp); // Create a Date object from the timestamp
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+    
+    // Check for valid date
+    if (isNaN(date.getTime())) {
+        return 'Invalid Date'; // Return 'Invalid Date' if the date is not valid
+    }
+
+    if (seconds < 60) {
+        return `${seconds} seconds ago`; // Return seconds if less than a minute
+    } else if (seconds < 3600) {
+        const minutes = Math.floor(seconds / 60);
+        return `${minutes} minutes ago`; // Return minutes if less than an hour
+    } else if (seconds < 86400) {
+        const hours = Math.floor(seconds / 3600);
+        return `${hours} hours ago`; // Return hours if less than a day
+    } else {
+        return date.toLocaleString(); // Fallback to a full date format
+    }
+}
+
 // Theme Change function
 function changeTheme(color) {
     localStorage.setItem('savedTheme', color);
@@ -84,6 +217,19 @@ function changeTheme(color) {
     });
 }
 
+// generate a session id
+function getSessionId() {
+    let sessionId = localStorage.getItem('sessionId');
+    if (!sessionId) {
+        sessionId = generateSessionId(); // Generate a random session ID
+        localStorage.setItem('sessionId', sessionId);
+    }
+    return sessionId;
+}
+//create a session Id
+function generateSessionId() {
+    return '_' + Math.random().toString(36).substr(2, 9);
+}
 // Display the current date and time
 const dt = new Date();
 document.getElementById("datetime").innerHTML = dt.toLocaleString();
