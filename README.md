@@ -13,7 +13,7 @@
 ### Clone the Repository:
 ```bash
 git clone <repository-url>
-cd doit
+cd Doit-V2
 ```
 
 ### Install Dependencies:
