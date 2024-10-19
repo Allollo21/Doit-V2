@@ -1,6 +1,3 @@
-Here’s the full README in proper Markdown syntax:
-
-```markdown
 # DOIT: Task Management Application
 
 **DOIT** is a task management application designed to help users efficiently organize, prioritize, and track their tasks. It features a user-friendly interface and customizable themes to enhance productivity.
@@ -78,4 +75,3 @@ This project is licensed under the [MIT License](https://mit-license.org/).
 
 ## Author
 Developed by **Ali Elgamal** and **Ali Reda**.
-```
