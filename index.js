@@ -16,7 +16,7 @@ const csp = {
   directives: {
     defaultSrc: ["'self'", '*'],
     scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'cdnjs.cloudflare.com', 'vercel.live', 'ws-us3.pusher.com'],
-    styleSrc: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com', 'cdnjs.cloudflare.com','public/css/about.css' , 'vercel.live'], // Allow Font Awesome
+    styleSrc: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com', 'cdnjs.cloudflare.com', 'css/about.css' , 'vercel.live'], // Allow Font Awesome
     fontSrc: ["'self'", 'fonts.gstatic.com', 'cdnjs.cloudflare.com'],
     imgSrc: ["'self'", '*', 'data:', 'i.postimg.cc'],
     connectSrc: ["'self'", 'wss://ws-us3.pusher.com', 'https://sockjs-us3.pusher.com', 'vercel.live'], // Allow Pusher connections
