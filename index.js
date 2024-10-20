@@ -110,6 +110,6 @@ app.get('/api/tasks', async (req, res) => {
     }
   });
 //new 
-app.get('public/about.html', (req, res) => {
+app.get('/public/about.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'about.html'));
   });
