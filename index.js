@@ -31,6 +31,7 @@ app.use(
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
+app.set('views', path.join(__dirname, 'api', 'views'));
 
 // Set EJS as the templating engine
 app.set("view engine", "ejs");
