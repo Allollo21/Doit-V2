@@ -17,9 +17,10 @@ const csp = {
     defaultSrc: ["'self'", '*'],
     scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'cdnjs.cloudflare.com', 'vercel.live'],
     styleSrc: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com', 'vercel.live'],
-    fontSrc: ["'self'", 'fonts.gstatic.com', 'cdnjs.cloudflare.com'], // Allow Font Awesome font sources
+    fontSrc: ["'self'", 'fonts.gstatic.com', 'cdnjs.cloudflare.com'],
     imgSrc: ["'self'", '*', 'data:', 'i.postimg.cc'],
     frameSrc: ["'self'", 'vercel.live'],
+    connectSrc: ["'self'", 'vercel.live'], // Allow connections to Vercel's domain
   }
 };
 
