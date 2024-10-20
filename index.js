@@ -4,12 +4,28 @@ const mongoose = require('mongoose');
 const path = require('path');
 const dotenv = require('dotenv');
 const Task = require('./models/Task'); // Import the Task model
+const helmet = require('helmet');
 
 // Load environment variables from .env file
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+//Configuring Content Security Policy (CSP) via helmet
+app.use(
+  helmet.contentSecurityPolicy({
+    useDefaults: true,
+    directives: {
+      defaultSrc: ["'self'"], // Default policy: allow resources from the same origin
+      scriptSrc: ["'self'", "https://vercel.live"], // Allow scripts from vercel.live
+      fontSrc: ["'self'", "https://fonts.gstatic.com"], // Allow fonts from Google Fonts
+      styleSrc: ["'self'", "https://fonts.googleapis.com"], // Allow styles from Google Fonts
+      connectSrc: ["'self'", "https://vercel.live"], // Allow WebSocket or XHR connections from Vercel
+      imgSrc: ["'self'", "data:"], // Allow images from the same origin and inline images (data URIs)
+      // Add more directives as needed
+    },
+  })
+);
 
 // Middleware
 app.use(express.json()); // Parse JSON bodies
