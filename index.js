@@ -15,12 +15,12 @@ const PORT = process.env.PORT || 3001;
 const csp = {
   directives: {
     defaultSrc: ["'self'", '*'],
-    scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'cdnjs.cloudflare.com', 'vercel.live'],
-    styleSrc: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com', 'vercel.live'],
+    scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'cdnjs.cloudflare.com', 'vercel.live', 'ws-us3.pusher.com'],
+    styleSrc: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com', 'cdnjs.cloudflare.com', 'vercel.live'], // Allow Font Awesome
     fontSrc: ["'self'", 'fonts.gstatic.com', 'cdnjs.cloudflare.com'],
     imgSrc: ["'self'", '*', 'data:', 'i.postimg.cc'],
+    connectSrc: ["'self'", 'wss://ws-us3.pusher.com', 'https://sockjs-us3.pusher.com', 'vercel.live'], // Allow Pusher connections
     frameSrc: ["'self'", 'vercel.live'],
-    connectSrc: ["'self'", 'vercel.live'], // Allow connections to Vercel's domain
   }
 };
 
